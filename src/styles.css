@@ -27,6 +27,12 @@ h2 { font-size: clamp(38px, 5vw, 54px); letter-spacing: -.03em; }
 .icon-badge, .success-icon { margin: 0 auto 18px; width: 50px; height: 50px; display: grid; place-items: center; border-radius: 50%; background: #f6dfdc; color: #c64f50; }
 .card .muted { margin: 14px 0 24px; }
 .calendar { border: 1px solid #ebe3dc; background: #fffdf9; border-radius: 17px; padding: 14px; }
+.calendar.is-traveling { pointer-events: none; animation: calendar-travel .65s ease-in-out; }
+@keyframes calendar-travel {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  45% { opacity: .25; transform: translateY(8px) scale(.97); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
 .calendar-head { display: flex; align-items: center; justify-content: space-between; padding: 3px 3px 14px; text-transform: capitalize; }
 .calendar-head button { border: 0; background: transparent; color: #6a625d; display: grid; place-items: center; cursor: pointer; padding: 7px; }
 .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }

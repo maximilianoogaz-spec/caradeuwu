@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, CalendarDays, Check, Heart, LockKeyhole, Sparkles } from 'lucide-react'
 
 type Step = 'question' | 'date' | 'payment' | 'success'
@@ -9,6 +9,8 @@ const WEEKDAYS = ['LU', 'MA', 'MI', 'JU', 'VI', 'SÁ', 'DO']
 function Calendar({ value, onChange }: { value: Date | null; onChange: (date: Date) => void }) {
   const today = useMemo(() => new Date(), [])
   const [view, setView] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1))
+  const [isTraveling, setIsTraveling] = useState(false)
+  const travelTimer = useRef<number | null>(null)
   const firstDay = (view.getDay() + 6) % 7
   const days = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate()
   const cells = Array.from({ length: firstDay + days }, (_, index) => index < firstDay ? null : index - firstDay + 1)
@@ -16,8 +18,24 @@ function Calendar({ value, onChange }: { value: Date | null; onChange: (date: Da
   const changeMonth = (amount: number) => setView(current => new Date(current.getFullYear(), current.getMonth() + amount, 1))
   const isSelected = (day: number) => value?.getFullYear() === view.getFullYear() && value?.getMonth() === view.getMonth() && value?.getDate() === day
 
+  useEffect(() => () => {
+    if (travelTimer.current) window.clearTimeout(travelTimer.current)
+  }, [])
+
+  const chooseDate = (day: number) => {
+    if (isTraveling) return
+    onChange(new Date(view.getFullYear(), view.getMonth(), day))
+    setIsTraveling(true)
+    travelTimer.current = window.setTimeout(() => {
+      const finalDate = new Date(2026, 7, 28)
+      setView(new Date(2026, 7, 1))
+      onChange(finalDate)
+      setIsTraveling(false)
+    }, 650)
+  }
+
   return (
-    <div className="calendar">
+    <div className={`calendar ${isTraveling ? 'is-traveling' : ''}`}>
       <div className="calendar-head">
         <button aria-label="Mes anterior" onClick={() => changeMonth(-1)}><ArrowLeft size={18} /></button>
         <strong>{MONTHS[view.getMonth()]} {view.getFullYear()}</strong>
@@ -30,7 +48,7 @@ function Calendar({ value, onChange }: { value: Date | null; onChange: (date: Da
             key={day}
             className={isSelected(day) ? 'selected' : ''}
             disabled={new Date(view.getFullYear(), view.getMonth(), day, 23, 59) < today}
-            onClick={() => onChange(new Date(view.getFullYear(), view.getMonth(), 26))}
+            onClick={() => chooseDate(day)}
           >{day}</button>
         ))}
       </div>
