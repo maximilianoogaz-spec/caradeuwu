@@ -65,9 +65,7 @@ function App() {
 
       {step === 'question' && (
         <section className="hero">
-          <p className="eyebrow">UNA PREGUNTA MUY IMPORTANTE</p>
-          <h1>Te guztaria una<br /><em>sita comigo?</em></h1>
-          <p className="intro">Prometo buena conversación, risas y un plan bonito.<br />Solo tienes que elegir sabiamente.</p>
+          <h1><em>SITA</em> contigo</h1>
           <div className="play-area" ref={playArea}>
             <button className="yes-button" onClick={() => setStep('date')}><Heart size={20} fill="currentColor" /> Sí, obvio</button>
             <button
