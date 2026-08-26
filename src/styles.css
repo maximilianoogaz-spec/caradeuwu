@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+:root { font-family: 'DM Sans', sans-serif; color: #27211e; background: #f8f3eb; font-synthesis: none; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button { font: inherit; }
+main { min-height: 100vh; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+nav { width: 100%; height: 84px; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 12px; font-weight: 700; letter-spacing: .22em; border-bottom: 1px solid rgba(39,33,30,.08); z-index: 2; }
+.brand-mark { width: 30px; height: 30px; display: grid; place-items: center; color: #fff; background: #d75353; border-radius: 50% 50% 46% 54%; transform: rotate(-6deg); letter-spacing: 0; }
+.ambient { position: absolute; border-radius: 999px; filter: blur(2px); pointer-events: none; }
+.ambient-one { width: 330px; height: 330px; background: #efd7cf; top: 13%; left: -190px; opacity: .55; }
+.ambient-two { width: 400px; height: 400px; background: #e5dcc3; right: -230px; bottom: -100px; opacity: .5; }
+.hero { width: min(780px, 92vw); margin: auto; padding: 70px 0 35px; text-align: center; z-index: 1; }
+.eyebrow { color: #b64b4b; font-weight: 700; font-size: 11px; letter-spacing: .2em; margin: 0 0 18px; }
+h1, h2 { font-family: 'Playfair Display', serif; margin: 0; line-height: .98; }
+h1 { font-size: clamp(54px, 8vw, 92px); letter-spacing: -.045em; }
+h1 em { color: #cf4f50; font-weight: 700; }
+h2 { font-size: clamp(38px, 5vw, 54px); letter-spacing: -.03em; }
+.intro, .muted { color: #716965; line-height: 1.75; font-size: 15px; }
+.intro { margin: 28px 0 6px; }
+.play-area { width: min(500px, 90vw); height: 150px; position: relative; margin: 20px auto 0; }
+.yes-button, .primary { border: 0; cursor: pointer; color: white; background: #cf4f50; border-radius: 999px; font-weight: 700; box-shadow: 0 12px 28px rgba(183,62,65,.22); transition: transform .2s, box-shadow .2s; }
+.yes-button { position: absolute; left: calc(50% - 120px); top: 50px; padding: 15px 24px; display: flex; gap: 9px; align-items: center; }
+.yes-button:hover, .primary:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(183,62,65,.3); }
+.no-button { position: absolute; width: 86px; height: 46px; border: 1px solid #d9cdc5; border-radius: 999px; background: rgba(255,255,255,.65); color: #766e69; cursor: pointer; transition: left .16s ease-out, top .16s ease-out; }
+.hint { color: #a59b94; font-size: 12px; margin: -4px 0 0; }
+.card { width: min(480px, calc(100vw - 32px)); margin: auto; padding: 42px 44px 36px; background: rgba(255,255,255,.72); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,.9); border-radius: 28px; text-align: center; box-shadow: 0 30px 70px rgba(68,47,39,.1); z-index: 1; animation: arrive .45s ease both; }
+@keyframes arrive { from { opacity: 0; transform: translateY(15px) scale(.98); } }
+.icon-badge, .success-icon { margin: 0 auto 18px; width: 50px; height: 50px; display: grid; place-items: center; border-radius: 50%; background: #f6dfdc; color: #c64f50; }
+.card .muted { margin: 14px 0 24px; }
+.calendar { border: 1px solid #ebe3dc; background: #fffdf9; border-radius: 17px; padding: 14px; }
+.calendar-head { display: flex; align-items: center; justify-content: space-between; padding: 3px 3px 14px; text-transform: capitalize; }
+.calendar-head button { border: 0; background: transparent; color: #6a625d; display: grid; place-items: center; cursor: pointer; padding: 7px; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.weekdays span { font-size: 9px; font-weight: 700; color: #aaa09a; padding: 6px 0; }
+.days button { border: 0; aspect-ratio: 1; border-radius: 50%; background: transparent; cursor: pointer; color: #4b4541; }
+.days button:hover:not(:disabled) { background: #f7e7e4; }
+.days button.selected { background: #cf4f50; color: white; font-weight: 700; }
+.days button:disabled { color: #d7d0cc; cursor: default; }
+.primary { padding: 15px 24px; display: inline-flex; justify-content: center; align-items: center; gap: 9px; }
+.primary.wide { width: 100%; margin-top: 19px; }
+.primary:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
+.receipt { background: #fffdf9; border: 1px dashed #d9c9be; border-radius: 16px; padding: 9px 20px; text-align: left; }
+.receipt div { display: flex; justify-content: space-between; gap: 20px; padding: 12px 0; font-size: 13px; border-bottom: 1px solid #eee6df; }
+.receipt div:last-child { border: 0; }
+.receipt span { color: #918781; }
+.receipt strong { text-align: right; text-transform: capitalize; }
+.receipt .total { font-size: 17px; align-items: center; }
+.receipt .total strong { color: #c64f50; font-size: 24px; }
+.fake-note { color: #a49a94; font-size: 10px; display: flex; justify-content: center; gap: 5px; align-items: center; }
+.text-button { border: 0; background: transparent; color: #8b7d76; text-decoration: underline; cursor: pointer; font-size: 12px; }
+.success-icon { background: #dcebdc; color: #4b8454; width: 64px; height: 64px; }
+.ticket { margin: 27px auto 22px; max-width: 310px; padding: 18px; color: #fff; background: #cf4f50; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 12px 24px rgba(183,62,65,.2); }
+.ticket span { font-size: 10px; letter-spacing: .16em; font-weight: 700; }
+footer { padding: 22px; display: flex; align-items: center; gap: 5px; color: #aa9f98; font-size: 9px; letter-spacing: .15em; font-weight: 700; z-index: 1; }
+
+@media (max-width: 540px) {
+  nav { height: 66px; }
+  .hero { padding-top: 45px; }
+  h1 { font-size: 51px; }
+  .intro br { display: none; }
+  .card { padding: 32px 20px 27px; margin: 22px auto; }
+  .yes-button { left: calc(50% - 115px); }
+  footer { margin-top: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
