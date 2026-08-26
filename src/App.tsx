@@ -27,7 +27,7 @@ function Calendar({ value, onChange }: { value: Date | null; onChange: (date: Da
     onChange(new Date(view.getFullYear(), view.getMonth(), day))
     setIsTraveling(true)
     travelTimer.current = window.setTimeout(() => {
-      const finalDate = new Date(2026, 7, 28)
+      const finalDate = new Date(2026, 7, 26)
       setView(new Date(2026, 7, 1))
       onChange(finalDate)
       setIsTraveling(false)
