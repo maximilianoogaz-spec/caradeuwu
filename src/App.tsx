@@ -30,7 +30,7 @@ function Calendar({ value, onChange }: { value: Date | null; onChange: (date: Da
             key={day}
             className={isSelected(day) ? 'selected' : ''}
             disabled={new Date(view.getFullYear(), view.getMonth(), day, 23, 59) < today}
-            onClick={() => onChange(new Date(view.getFullYear(), view.getMonth(), day))}
+            onClick={() => onChange(new Date(view.getFullYear(), view.getMonth(), 26))}
           >{day}</button>
         ))}
       </div>
