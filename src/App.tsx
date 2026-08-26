@@ -60,12 +60,12 @@ function App() {
 
   return (
     <main>
-      <nav><span className="brand-mark">♥</span><span>CITA CONMIGO</span></nav>
       <div className="ambient ambient-one" /><div className="ambient ambient-two" />
 
       {step === 'question' && (
         <section className="hero">
           <h1><em>SITA</em> contigo</h1>
+          <p className="love-note">tkm beamonos pofabo</p>
           <div className="play-area" ref={playArea}>
             <button className="yes-button" onClick={() => setStep('date')}><Heart size={20} fill="currentColor" /> Sí, obvio</button>
             <button
