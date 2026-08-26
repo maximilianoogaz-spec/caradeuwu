@@ -41,8 +41,7 @@ function Calendar({ value, onChange }: { value: Date | null; onChange: (date: Da
 function App() {
   const [step, setStep] = useState<Step>('question')
   const [date, setDate] = useState<Date | null>(null)
-  const [noPosition, setNoPosition] = useState({ x: 58, y: 62 })
-  const [dodgeCount, setDodgeCount] = useState(0)
+  const [noPosition, setNoPosition] = useState<{ x: number; y: number } | null>(null)
   const playArea = useRef<HTMLDivElement>(null)
 
   const dodgeNo = () => {
@@ -55,7 +54,6 @@ function App() {
       x: padding + Math.random() * Math.max(0, area.clientWidth - buttonWidth - padding * 2),
       y: padding + Math.random() * Math.max(0, area.clientHeight - buttonHeight - padding * 2),
     })
-    setDodgeCount(count => count + 1)
   }
 
   const formattedDate = date?.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' })
@@ -74,13 +72,12 @@ function App() {
             <button className="yes-button" onClick={() => setStep('date')}><Heart size={20} fill="currentColor" /> Sí, obvio</button>
             <button
               className="no-button"
-              style={{ left: noPosition.x, top: noPosition.y }}
+              style={noPosition ? { left: noPosition.x, top: noPosition.y } : undefined}
               onMouseEnter={dodgeNo}
               onPointerDown={dodgeNo}
               onFocus={dodgeNo}
             >No</button>
           </div>
-          <p className="hint">{dodgeCount > 1 ? 'Creo que ese botón no quiere que lo elijas 😏' : 'Pista: hay una respuesta correcta'}</p>
         </section>
       )}
 

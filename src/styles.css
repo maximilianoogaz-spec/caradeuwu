@@ -22,8 +22,7 @@ h2 { font-size: clamp(38px, 5vw, 54px); letter-spacing: -.03em; }
 .yes-button, .primary { border: 0; cursor: pointer; color: white; background: #cf4f50; border-radius: 999px; font-weight: 700; box-shadow: 0 12px 28px rgba(183,62,65,.22); transition: transform .2s, box-shadow .2s; }
 .yes-button { position: absolute; left: calc(50% - 120px); top: 50px; padding: 15px 24px; display: flex; gap: 9px; align-items: center; }
 .yes-button:hover, .primary:hover { transform: translateY(-2px); box-shadow: 0 16px 34px rgba(183,62,65,.3); }
-.no-button { position: absolute; width: 86px; height: 46px; border: 1px solid #d9cdc5; border-radius: 999px; background: rgba(255,255,255,.65); color: #766e69; cursor: pointer; transition: left .16s ease-out, top .16s ease-out; }
-.hint { color: #a59b94; font-size: 12px; margin: -4px 0 0; }
+.no-button { position: absolute; left: calc(50% + 34px); top: 50px; width: 86px; height: 46px; border: 1px solid #d9cdc5; border-radius: 999px; background: rgba(255,255,255,.65); color: #766e69; cursor: pointer; transition: left .16s ease-out, top .16s ease-out; }
 .card { width: min(480px, calc(100vw - 32px)); margin: auto; padding: 42px 44px 36px; background: rgba(255,255,255,.72); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,.9); border-radius: 28px; text-align: center; box-shadow: 0 30px 70px rgba(68,47,39,.1); z-index: 1; animation: arrive .45s ease both; }
 @keyframes arrive { from { opacity: 0; transform: translateY(15px) scale(.98); } }
 .icon-badge, .success-icon { margin: 0 auto 18px; width: 50px; height: 50px; display: grid; place-items: center; border-radius: 50%; background: #f6dfdc; color: #c64f50; }
