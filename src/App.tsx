@@ -13,7 +13,7 @@ const FOOD = ['Completo dinámico 🌭', 'Papitas con mantequilla 🥔', 'Atún 
 
 function Home({ open }: { open: (id: AppId) => void }) {
   return <div className="home-screen">
-    <header className="hello"><div><span>JAVI OS · BETA</span><h1>Hola, bonita.</h1><p>¿Qué necesita la señorita hoy?</p></div><div className="avatar">J</div></header>
+    <header className="hello"><div><span>JAVI OS · BETA</span><p>¿Qué necesita la señorita hoy?</p></div><div className="avatar">J</div></header>
     <button className="care-widget" onClick={() => open('estado')}><span className="pulse-dot" /><div><small>JAVICARE™ EN LÍNEA</small><strong>Todos los sistemas operativos</strong></div><ChevronRight size={20} /></button>
     <section className="apps-grid" aria-label="Aplicaciones">{APPS.map(item => { const Icon = item.icon; return <button key={item.id} className="app-tile" onClick={() => open(item.id)}><span className={`app-icon ${item.color}`}><Icon size={25} /></span><span>{item.label}</span></button> })}</section>
     <section className="daily-card"><span>REPORTE DIARIO</span><p>Probabilidad de que Maxi quiera verte</p><strong>100%</strong><div><i /></div></section>
