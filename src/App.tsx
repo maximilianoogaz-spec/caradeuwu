@@ -1,146 +1,66 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowLeft, ArrowRight, CalendarDays, Check, Heart, LockKeyhole, Sparkles } from 'lucide-react'
+import { useMemo, useRef, useState } from 'react'
+import { AlertTriangle, ArrowLeft, BarChart3, ChevronRight, CircleAlert, ClipboardList, Heart, Pizza, RotateCcw, Search, Sparkles, Star, Trophy } from 'lucide-react'
 import javiFavorites from './assets/gustos-de-javi.png'
 
-type Step = 'question' | 'date' | 'payment' | 'success'
+type AppId = 'home' | 'cariño' | 'comida' | 'emergencia' | 'calificar' | 'estado' | 'reclamos' | 'logros' | 'indirectas'
+const APPS = [
+  { id: 'cariño', label: 'Cariño', icon: Heart, color: 'pink' }, { id: 'comida', label: 'Qué comemos', icon: Pizza, color: 'orange' },
+  { id: 'emergencia', label: 'Emergencia', icon: AlertTriangle, color: 'red' }, { id: 'calificar', label: 'Calificar a Maxi', icon: Star, color: 'yellow' },
+  { id: 'estado', label: 'Estado de Javi', icon: BarChart3, color: 'purple' }, { id: 'reclamos', label: 'Reclamos', icon: ClipboardList, color: 'blue' },
+  { id: 'logros', label: 'Logros', icon: Trophy, color: 'green' }, { id: 'indirectas', label: 'Indirectas', icon: Search, color: 'lavender' },
+] as const
+const FOOD = ['Completo dinámico 🌭', 'Papitas con mantequilla 🥔', 'Atún con mayo y ají 🌶️', 'Tomatito con queso blanco 🍅', 'Completo dinámico 🌭', 'Completo dinámico 🌭']
 
-const MONTHS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
-const WEEKDAYS = ['LU', 'MA', 'MI', 'JU', 'VI', 'SÁ', 'DO']
-
-function Calendar({ value, onChange }: { value: Date | null; onChange: (date: Date) => void }) {
-  const today = useMemo(() => new Date(), [])
-  const [view, setView] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1))
-  const [isTraveling, setIsTraveling] = useState(false)
-  const travelTimer = useRef<number | null>(null)
-  const firstDay = (view.getDay() + 6) % 7
-  const days = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate()
-  const cells = Array.from({ length: firstDay + days }, (_, index) => index < firstDay ? null : index - firstDay + 1)
-
-  const changeMonth = (amount: number) => setView(current => new Date(current.getFullYear(), current.getMonth() + amount, 1))
-  const isSelected = (day: number) => value?.getFullYear() === view.getFullYear() && value?.getMonth() === view.getMonth() && value?.getDate() === day
-
-  useEffect(() => () => {
-    if (travelTimer.current) window.clearTimeout(travelTimer.current)
-  }, [])
-
-  const chooseDate = (day: number) => {
-    if (isTraveling) return
-    onChange(new Date(view.getFullYear(), view.getMonth(), day))
-    setIsTraveling(true)
-    travelTimer.current = window.setTimeout(() => {
-      const finalDate = new Date(2026, 7, 26)
-      setView(new Date(2026, 7, 1))
-      onChange(finalDate)
-      setIsTraveling(false)
-    }, 650)
-  }
-
-  return (
-    <div className={`calendar ${isTraveling ? 'is-traveling' : ''}`}>
-      <div className="calendar-head">
-        <button aria-label="Mes anterior" onClick={() => changeMonth(-1)}><ArrowLeft size={18} /></button>
-        <strong>{MONTHS[view.getMonth()]} {view.getFullYear()}</strong>
-        <button aria-label="Mes siguiente" onClick={() => changeMonth(1)}><ArrowRight size={18} /></button>
-      </div>
-      <div className="calendar-grid weekdays">{WEEKDAYS.map(day => <span key={day}>{day}</span>)}</div>
-      <div className="calendar-grid days">
-        {cells.map((day, index) => day === null ? <span key={`empty-${index}`} /> : (
-          <button
-            key={day}
-            className={isSelected(day) ? 'selected' : ''}
-            disabled={new Date(view.getFullYear(), view.getMonth(), day, 23, 59) < today}
-            onClick={() => chooseDate(day)}
-          >{day}</button>
-        ))}
-      </div>
-    </div>
-  )
+function Home({ open }: { open: (id: AppId) => void }) {
+  return <div className="home-screen">
+    <header className="hello"><div><span>JAVI OS · BETA</span><h1>Hola, bonita.</h1><p>¿Qué necesita la señorita hoy?</p></div><div className="avatar">J</div></header>
+    <button className="care-widget" onClick={() => open('estado')}><span className="pulse-dot" /><div><small>JAVICARE™ EN LÍNEA</small><strong>Todos los sistemas operativos</strong></div><ChevronRight size={20} /></button>
+    <section className="apps-grid" aria-label="Aplicaciones">{APPS.map(item => { const Icon = item.icon; return <button key={item.id} className="app-tile" onClick={() => open(item.id)}><span className={`app-icon ${item.color}`}><Icon size={25} /></span><span>{item.label}</span></button> })}</section>
+    <section className="daily-card"><span>REPORTE DIARIO</span><p>Probabilidad de que Maxi quiera verte</p><strong>100%</strong><div><i /></div></section>
+    <p className="version">Diseñado por Maxi · exclusivamente para Javi ♡</p>
+  </div>
 }
 
+function Shell({ title, back, children }: { title: string; back: () => void; children: React.ReactNode }) {
+  return <div className="module-screen"><header className="module-nav"><button onClick={back} aria-label="Volver"><ArrowLeft /></button><strong>{title}</strong><span /></header>{children}</div>
+}
+function Affection({ back }: { back: () => void }) {
+  const [amount, setAmount] = useState(2); const [sent, setSent] = useState(false); const levels = ['poquito', 'normal', 'urgente', 'riesgo vital']
+  return <Shell title="Solicitar cariño" back={back}><div className="module-body centered"><div className="big-emoji">💗</div><h2>¿Cuánto cariño necesitas?</h2><p>Selecciona cuidadosamente. No hay límite diario.</p><input className="love-range" type="range" min="0" max="3" value={amount} onChange={e => { setAmount(Number(e.target.value)); setSent(false) }} /><div className="range-labels"><span>poquito</span><span>riesgo vital</span></div><div className="result-pill">Nivel: <strong>{levels[amount]}</strong></div><button className="action" onClick={() => setSent(true)}>Enviar solicitud <Heart size={18} fill="currentColor" /></button>{sent ? <div className="success-message">✓ Orden emitida. Maxi tiene 0 minutos para presentarse.</div> : null}</div></Shell>
+}
+function Food({ back }: { back: () => void }) {
+  const [choice, setChoice] = useState('Toca la ruleta'); const [spinning, setSpinning] = useState(false)
+  const spin = () => { setSpinning(true); setChoice('Decidiendo algo muy serio…'); window.setTimeout(() => { setChoice(FOOD[Math.floor(Math.random() * FOOD.length)]); setSpinning(false) }, 900) }
+  return <Shell title="¿Qué comemos?" back={back}><div className="module-body centered"><div className={`food-wheel ${spinning ? 'spin' : ''}`}><span>🌭</span><span>🥔</span><span>🍅</span><span>🌶️</span><b>?</b></div><h2>{choice}</h2><p>Algoritmo entrenado con los gustos oficiales de Javi.</p><button className="action" onClick={spin} disabled={spinning}><RotateCcw size={18} /> Girar ruleta</button><small className="fine-print">* La probabilidad de completo dinámico fue alterada sospechosamente.</small></div></Shell>
+}
+function Emergency({ back }: { back: () => void }) {
+  const [active, setActive] = useState(false)
+  return <Shell title="Emergencia" back={back}><div className="module-body centered emergency"><CircleAlert size={54} /><span>PROTOCOLO JAVICARE™</span><h2>Botón de emergencia</h2><p>Úsese ante frío, hambre, enojo o necesidad crítica de cariño.</p><button className={`sos ${active ? 'activated' : ''}`} onClick={() => setActive(true)}>{active ? 'SOLICITUD ENVIADA' : 'NECESITO MIMOS'}</button>{active ? <div className="success-message">Solicitud crítica enviada al departamento correspondiente (Maxi).</div> : null}</div></Shell>
+}
+function Rating({ back }: { back: () => void }) {
+  const labels = ['Comportamiento', 'Facha', 'Capacidad de hacer reír', 'Nivel de aweonao']
+  return <Shell title="Evaluar a Maxi" back={back}><div className="module-body"><div className="big-emoji centered">⭐</div><h2 className="centered">Evaluación trimestral</h2><div className="ratings">{labels.map(label => <div key={label}><span>{label}</span><div>{[1,2,3,4,5].map(n => <button aria-label={`${n} estrellas`} key={n}><Star fill="currentColor" /></button>)}</div></div>)}</div><div className="system-note">Resultado: 5.0 · Error del sistema: valores inferiores no permitidos.</div></div></Shell>
+}
+function Status({ back }: { back: () => void }) {
+  const stats = [['Nivel de sueño',82,'#8d76db'],['Hambre',64,'#e9a353'],['Ganas de verme',99.7,'#db5c73'],['Tolerancia hacia Maxi',12,'#65a991']]
+  return <Shell title="Estado de Javi" back={back}><div className="module-body"><div className="status-heading"><div><span>ACTUALIZADO AHORA</span><h2>Panel vital</h2></div><span className="live">● EN VIVO</span></div><div className="stats">{stats.map(([label,value,color]) => <div key={String(label)}><header><span>{label}</span><strong>{value}%</strong></header><div><i style={{ width:`${value}%`, background:String(color) }} /></div></div>)}</div><div className="diagnosis"><Sparkles /><div><strong>Diagnóstico del sistema</strong><p>Se recomienda ver a Maxi y comer algo rico inmediatamente.</p></div></div></div></Shell>
+}
+function Complaints({ back }: { back: () => void }) {
+  const [sent,setSent]=useState(false); const [selected,setSelected]=useState(''); const options=['Me molestó','Se demoró en responder','Anda muy lindo y me enoja','Otro delito gravísimo']
+  return <Shell title="Sistema de reclamos" back={back}><div className="module-body"><h2>¿Qué hizo Maxi ahora?</h2><p>Todos los reclamos son tratados con la seriedad que merecen.</p><div className="option-list">{options.map(o=><button className={selected===o?'selected':''} key={o} onClick={()=>{setSelected(o);setSent(false)}}>{o}<span>{selected===o?'✓':'○'}</span></button>)}</div><button className="action full" disabled={!selected} onClick={()=>setSent(true)}>Enviar reclamo</button>{sent?<div className="system-note">Reclamo recibido. Será ignorado cuidadosamente en 3–5 días hábiles.</div>:null}</div></Shell>
+}
+function Achievements({ back }: { back: () => void }) {
+  const items=[['🏆','Primera cita','Desbloqueado'],['🏆','Me aguantó 30 días','Desbloqueado'],['🔒','No molestar a Maxi por 24 h','Imposible'],['🔒','Completar misión secreta','0% completado']]
+  return <Shell title="Logros" back={back}><div className="module-body"><div className="achievement-title"><span>NIVEL ACTUAL</span><h2>Javi legendaria</h2><div><i /></div></div><div className="achievement-list">{items.map(([icon,title,state],i)=><div className={i>1?'locked':''} key={title}><span>{icon}</span><div><strong>{title}</strong><small>{state}</small></div></div>)}</div></div></Shell>
+}
+function Detector({ back }: { back: () => void }) {
+  const [text,setText]=useState(''); const [done,setDone]=useState(false); const results=useMemo(()=>[['Coqueteo detectado',94],['Simpeo',71],['Maxi haciéndose el wn',100]],[])
+  return <Shell title="Detector de indirectas" back={back}><div className="module-body"><div className="big-emoji centered">🔮</div><h2 className="centered">Analizador profesional</h2><p className="centered">Escribe una frase sospechosa enviada por Maxi.</p><textarea value={text} onChange={e=>{setText(e.target.value);setDone(false)}} placeholder="Ej: oye, ¿qué haces hoy?" /><button className="action full" disabled={!text.trim()} onClick={()=>setDone(true)}>Analizar indirecta</button>{done?<div className="analysis-result">{results.map(([label,n])=><div key={String(label)}><span>{label}</span><strong>{n}%</strong></div>)}<p>Veredicto: quiere verte, pero intenta disimular.</p></div>:null}</div></Shell>
+}
 function App() {
-  const [step, setStep] = useState<Step>('question')
-  const [date, setDate] = useState<Date | null>(null)
-  const [noPosition, setNoPosition] = useState<{ x: number; y: number } | null>(null)
-  const playArea = useRef<HTMLDivElement>(null)
-
-  const dodgeNo = () => {
-    const area = playArea.current
-    if (!area) return
-    const padding = 10
-    const buttonWidth = 100
-    const buttonHeight = 48
-    setNoPosition({
-      x: padding + Math.random() * Math.max(0, area.clientWidth - buttonWidth - padding * 2),
-      y: padding + Math.random() * Math.max(0, area.clientHeight - buttonHeight - padding * 2),
-    })
-  }
-
-  const formattedDate = date?.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long' })
-
-  return (
-    <main>
-      <img className="javi-collage" src={javiFavorites} alt="" aria-hidden="true" />
-      <div className="collage-wash" />
-      <div className="ambient ambient-one" /><div className="ambient ambient-two" />
-
-      {step === 'question' && (
-        <section className="hero">
-          <h1><em>SITA</em> contigo</h1>
-          <p className="love-note">tkm beamonos pofabo</p>
-          <div className="play-area" ref={playArea}>
-            <button className="yes-button" onClick={() => setStep('date')}><Heart size={20} fill="currentColor" /> Sí, obvio</button>
-            <button
-              className="no-button"
-              style={noPosition ? { left: noPosition.x, top: noPosition.y } : undefined}
-              onMouseEnter={dodgeNo}
-              onPointerDown={dodgeNo}
-              onFocus={dodgeNo}
-            >No</button>
-          </div>
-        </section>
-      )}
-
-      {step === 'date' && (
-        <section className="card date-card">
-          <div className="icon-badge"><CalendarDays size={25} /></div>
-          <p className="eyebrow">AHORA LO IMPORTANTE</p>
-          <h2>Elige nuestro día</h2>
-          <p className="muted">Marca una fecha para esta cita que promete.</p>
-          <Calendar value={date} onChange={setDate} />
-          <button className="primary wide" disabled={!date} onClick={() => setStep('payment')}>Continuar <ArrowRight size={18} /></button>
-        </section>
-      )}
-
-      {step === 'payment' && (
-        <section className="card payment-card">
-          <div className="icon-badge"><Sparkles size={25} /></div>
-          <p className="eyebrow">ÚLTIMO PASITO</p>
-          <h2>Reserva confirmada</h2>
-          <p className="muted">Tu cita está a punto de quedar oficialmente agendada.</p>
-          <div className="receipt">
-            <div><span>Fecha</span><strong>{formattedDate}</strong></div>
-            <div><span>Plan</span><strong>Cita sorpresa ✨</strong></div>
-            <div className="total"><span>Total ficticio</span><strong>$2.990</strong></div>
-          </div>
-          <button className="primary wide" onClick={() => setStep('success')}><LockKeyhole size={17} /> Pagar $2.990</button>
-          <p className="fake-note"><LockKeyhole size={12} /> Pago de mentira · No se solicitarán datos reales</p>
-          <button className="text-button" onClick={() => setStep('date')}>Cambiar fecha</button>
-        </section>
-      )}
-
-      {step === 'success' && (
-        <section className="card success-card">
-          <div className="success-icon"><Check size={32} strokeWidth={3} /></div>
-          <p className="eyebrow">¡TRATO HECHO!</p>
-          <h2>Tenemos una cita</h2>
-          <p className="muted">Nos vemos el <strong>{formattedDate}</strong>.<br />Yo pongo el plan, tú trae esa sonrisa.</p>
-          <div className="ticket"><Heart fill="currentColor" /><span>ADMIT ONE</span><b>$2.990</b></div>
-          <button className="text-button" onClick={() => { setStep('question'); setDate(null) }}>Volver al inicio</button>
-        </section>
-      )}
-      <footer>HECHO CON <Heart size={12} fill="currentColor" /> Y UN POQUITO DE VALENTÍA</footer>
-    </main>
-  )
+  const [current, setCurrent] = useState<AppId>('home'); const history = useRef<AppId[]>([])
+  const open = (id: AppId) => { history.current.push(current); setCurrent(id) }; const back = () => setCurrent(history.current.pop() ?? 'home')
+  const views: Record<Exclude<AppId,'home'>, React.ReactNode> = { cariño:<Affection back={back}/>, comida:<Food back={back}/>, emergencia:<Emergency back={back}/>, calificar:<Rating back={back}/>, estado:<Status back={back}/>, reclamos:<Complaints back={back}/>, logros:<Achievements back={back}/>, indirectas:<Detector back={back}/> }
+  return <main><img className="javi-collage" src={javiFavorites} alt="" aria-hidden="true"/><div className="os-wash"/><div className="phone">{current==='home'?<Home open={open}/>:views[current]}</div></main>
 }
-
 export default App
