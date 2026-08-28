@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, CalendarDays, Check, Heart, LockKeyhole, Sparkles } from 'lucide-react'
+import javiFavorites from './assets/gustos-de-javi.png'
 
 type Step = 'question' | 'date' | 'payment' | 'success'
 
@@ -78,6 +79,8 @@ function App() {
 
   return (
     <main>
+      <img className="javi-collage" src={javiFavorites} alt="" aria-hidden="true" />
+      <div className="collage-wash" />
       <div className="ambient ambient-one" /><div className="ambient ambient-two" />
 
       {step === 'question' && (
