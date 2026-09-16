@@ -1,13 +1,14 @@
 import { useMemo, useRef, useState } from 'react'
-import { AlertTriangle, ArrowLeft, BarChart3, ChevronRight, CircleAlert, ClipboardList, Heart, Pizza, RotateCcw, Search, Sparkles, Star, Trophy } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, BarChart3, Calendar, ChevronLeft, ChevronRight, CircleAlert, ClipboardList, Heart, Pizza, RotateCcw, Search, Sparkles, Star, Trophy } from 'lucide-react'
 import favoriteThings from './assets/gustos-favoritos.png'
 
-type AppId = 'home' | 'cariño' | 'comida' | 'emergencia' | 'calificar' | 'estado' | 'reclamos' | 'logros' | 'indirectas'
+type AppId = 'home' | 'cariño' | 'comida' | 'emergencia' | 'calificar' | 'estado' | 'reclamos' | 'logros' | 'indirectas' | 'agendar'
 const APPS = [
   { id: 'cariño', label: 'Cariño', icon: Heart, color: 'pink' }, { id: 'comida', label: 'Qué comemos', icon: Pizza, color: 'orange' },
   { id: 'emergencia', label: 'Emergencia', icon: AlertTriangle, color: 'red' }, { id: 'calificar', label: 'Calificar', icon: Star, color: 'yellow' },
   { id: 'estado', label: 'Estado de ánimo', icon: BarChart3, color: 'purple' }, { id: 'reclamos', label: 'Reclamos', icon: ClipboardList, color: 'blue' },
   { id: 'logros', label: 'Logros', icon: Trophy, color: 'green' }, { id: 'indirectas', label: 'Indirectas', icon: Search, color: 'lavender' },
+  { id: 'agendar', label: 'Agendar besitos', icon: Calendar, color: 'rose' },
 ] as const
 const FOOD = ['Completo dinámico 🌭', 'Papitas con mantequilla 🥔', 'Atún con mayo y ají 🌶️', 'Tomatito con queso blanco 🍅', 'Completo dinámico 🌭', 'Completo dinámico 🌭']
 
@@ -58,10 +59,29 @@ function Detector({ back }: { back: () => void }) {
   const [text,setText]=useState(''); const [done,setDone]=useState(false); const results=useMemo(()=>[['Coqueteo detectado',94],['Simpeo',71],['Hacerse el desentendido',100]],[])
   return <Shell title="Detector de indirectas" back={back}><div className="module-body"><div className="big-emoji centered">🔮</div><h2 className="centered">Analizador profesional</h2><p className="centered">Escribe una frase sospechosa de tu persona favorita.</p><textarea value={text} onChange={e=>{setText(e.target.value);setDone(false)}} placeholder="Ej: oye, ¿qué haces hoy?" /><button className="action full" disabled={!text.trim()} onClick={()=>setDone(true)}>Analizar indirecta</button>{done?<div className="analysis-result">{results.map(([label,n])=><div key={String(label)}><span>{label}</span><strong>{n}%</strong></div>)}<p>Veredicto: quiere verte, pero intenta disimular.</p></div>:null}</div></Shell>
 }
+function ScheduleKisses({ back }: { back: () => void }) {
+  const today = new Date(); const [viewDate, setViewDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1)); const [selected, setSelected] = useState<Date | null>(null); const [hour, setHour] = useState('20:00'); const [note, setNote] = useState(''); const [sent, setSent] = useState(false)
+  const y = viewDate.getFullYear(), m = viewDate.getMonth(); const firstDay = new Date(y, m, 1).getDay(); const daysInMonth = new Date(y, m + 1, 0).getDate(); const monthName = viewDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }); const dayNames = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa', 'Do']
+  const cells: (number | null)[] = []; for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) cells.push(null); for (let d = 1; d <= daysInMonth; d++) cells.push(d)
+  const isToday = (d: number) => d === today.getDate() && m === today.getMonth() && y === today.getFullYear()
+  const isPast = (d: number) => { const dt = new Date(y, m, d); const t = new Date(today.getFullYear(), today.getMonth(), today.getDate()); return dt < t }
+  const isSelected = (d: number) => selected && selected.getDate() === d && selected.getMonth() === m && selected.getFullYear() === y
+  const schedule = () => { if (!selected) return; const fecha = `${selected.getDate()} de ${selected.toLocaleDateString('es-ES', { month: 'long' })} de ${selected.getFullYear()}`; const texto = note ? `${note}` : 'Besitos programados'; const subject = encodeURIComponent(`Agendar besitos - ${fecha}`); const body = encodeURIComponent(`Hola!\n\nHe agendado unos besitos para el ${fecha} a las ${hour}.\n\nMensaje: ${texto}\n\nBesos! 💋`); window.open(`mailto:ogaz.desarrolloweb@gmail.com?subject=${subject}&body=${body}`, '_blank'); setSent(true) }
+  return <Shell title="Agendar besitos" back={back}><div className="module-body"><div className="big-emoji centered">💋</div><h2 className="centered">Programa tus besitos</h2><p className="centered">Elige un día y hora para recibir tus besitos.</p>
+  <div className="calendar"><div className="cal-header"><button onClick={() => setViewDate(new Date(y, m - 1, 1))} aria-label="Mes anterior"><ChevronLeft size={20} /></button><span>{monthName}</span><button onClick={() => setViewDate(new Date(y, m + 1, 1))} aria-label="Mes siguiente"><ChevronRight size={20} /></button></div>
+  <div className="cal-weekdays">{dayNames.map(d => <span key={d}>{d}</span>)}</div>
+  <div className="cal-grid">{cells.map((d, i) => d === null ? <span key={`e${i}`} /> : <button key={d} className={`cal-day${isToday(d) ? ' today' : ''}${isSelected(d) ? ' selected' : ''}${isPast(d) ? ' past' : ''}`} disabled={isPast(d)} onClick={() => { setSelected(new Date(y, m, d)); setSent(false) }}>{d}</button>)}</div>
+  </div>
+  {selected && <div className="schedule-form"><label>Hora del besito<div className="time-picker"><input type="time" value={hour} onChange={e => { setHour(e.target.value); setSent(false) }} /></div></label>
+  <label>Mensaje especial (opcional)<textarea value={note} onChange={e => { setNote(e.target.value); setSent(false) }} placeholder="Ej: Trae chocolates..." rows={2} /></label>
+  <button className="action full" onClick={schedule}>Agendar besitos <Calendar size={18} /></button></div>}
+  {sent && <div className="success-message">✓ Se abrió tu correo para enviar la invitación a ogaz.desarrolloweb@gmail.com. ¡No olvides darle enviar!</div>}
+  </div></Shell>
+}
 function App() {
   const [current, setCurrent] = useState<AppId>('home'); const history = useRef<AppId[]>([])
   const open = (id: AppId) => { history.current.push(current); setCurrent(id) }; const back = () => setCurrent(history.current.pop() ?? 'home')
-  const views: Record<Exclude<AppId,'home'>, React.ReactNode> = { cariño:<Affection back={back}/>, comida:<Food back={back}/>, emergencia:<Emergency back={back}/>, calificar:<Rating back={back}/>, estado:<Status back={back}/>, reclamos:<Complaints back={back}/>, logros:<Achievements back={back}/>, indirectas:<Detector back={back}/> }
+  const views: Record<Exclude<AppId,'home'>, React.ReactNode> = { cariño:<Affection back={back}/>, comida:<Food back={back}/>, emergencia:<Emergency back={back}/>, calificar:<Rating back={back}/>, estado:<Status back={back}/>, reclamos:<Complaints back={back}/>, logros:<Achievements back={back}/>, indirectas:<Detector back={back}/>, agendar:<ScheduleKisses back={back}/> }
   return <main><img className="favorites-collage" src={favoriteThings} alt="" aria-hidden="true"/><div className="os-wash"/><div className="phone">{current==='home'?<Home open={open}/>:views[current]}</div></main>
 }
 export default App
